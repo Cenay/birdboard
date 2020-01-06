@@ -1,5 +1,23 @@
+//@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
 @tailwind preflight;
 
 @tailwind components;
 
 @tailwind utilities;
+
+a {color: #006eff;}
+.button {
+  @apply .bg-blue .text-white .no-underline .rounded-lg .text-sm .py-2 .px-5;
+  box-shadow: 0 2px 7px 0 #b0eaff;
+}
+.section {
+    @apply .px-4;
+}
+
+.card {
+  @apply .bg-white .p-5 .rounded-lg .shadow;
+}

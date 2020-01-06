@@ -16,14 +16,17 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body class="bg-grey-light">
     <div id="app">
-        <nav class="bg-white section">
+        <nav class="bg-white section shadow">
+
             <div class="container mx-auto">
                 <div class="flex justify-between items-center py-1">
+
                     <h1>
                         <a class="navbar-brand" href="{{ url('/projects') }}">
                             <img src="/images/logo.svg" alt="Birdboard" class="relative" style="top: 2px">
