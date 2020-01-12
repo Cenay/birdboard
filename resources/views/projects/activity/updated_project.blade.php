@@ -1,1 +1,1 @@
-<em>You updated the project</em>
+<em>You updated a Project</em>

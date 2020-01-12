@@ -1,1 +1,1 @@
-<em>You created a task</em>
+<em>You created task "{{ $activity->subject->body }}"</em>

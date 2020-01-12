@@ -35,7 +35,6 @@ class Task extends Model
     public function complete()
     {
         $this->update(['completed' => true]);
-        // $this->project->recordActivity('completed_task');
         $this->recordActivity('completed_task');
     }
 
@@ -43,12 +42,7 @@ class Task extends Model
     {
         $this->update(['completed' => false]);
         $this->recordActivity('marked_task_incomplete');
-	}
-
-	public function activity()
-    {
-        return $this->morphMany(Activity::class, 'subject')->latest();
-	}
+	}	
 	
     public function recordActivity($description)
     {
@@ -58,6 +52,11 @@ class Task extends Model
 			'project_id' => $this->project_id,
 			'description' => $description
 		]);	
+	}
+	
+	public function activity()
+    {
+        return $this->morphMany(Activity::class, 'subject')->latest();
 	}
 	
 }

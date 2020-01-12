@@ -1,1 +1,1 @@
-<em>You created the project</em>
+<em>You created a Project</em>

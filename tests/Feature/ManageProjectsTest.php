@@ -56,6 +56,8 @@ class ProjectsTest extends TestCase
     public function a_user_can_update_a_project()
     {
 
+		$this->withoutExceptionHandling();
+		
         $project = ProjectTestFactory::create();
 
         // Attempt the update
