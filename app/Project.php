@@ -8,7 +8,8 @@ class Project extends Model
 {
     protected $guarded = [];
 
-    public function path() {
+    public function path()
+    {
         return "/projects/{$this->id}";
     }
 
@@ -17,21 +18,11 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * The tasks associated with the project.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function tasks()
     {
         return $this->hasMany(Task::class);
     }
-    /**
-     * Add a task to the project.
-     *
-     * @param  string $body
-     * @return \Illuminate\Database\Eloquent\Model
-     */
+
     public function addTask($body)
     {
         return $this->tasks()->create(compact('body'));
@@ -39,6 +30,27 @@ class Project extends Model
 
     public function activity()
     {
-        return $this->hasMany(Activity::class);
+        return $this->hasMany(Activity::class)->latest();
+	}
+	
+    public function recordActivity($description)
+    {
+		// Refactor
+		// Because we have an activity function (above), and project is created automatically
+		// We can just create on that "relationship"
+        // Activity::create([
+        //     'project_id' => $this->id,
+        //     'description' => $type
+		// ]);
+		
+		// Next refactor, make the variables line up
+		// $this->activity()->create(['description' => $type]); // Rename is function definition as well
+		
+		// Next refactory, compact the call out
+		// $this->activity()->create(['description' => $description]);
+		
+		$this->activity()->create(compact('description'));
+		
+
     }
 }
