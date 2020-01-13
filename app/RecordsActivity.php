@@ -43,23 +43,23 @@ trait RecordsActivity
 	public function recordActivity($description)
     {
         $this->activity()->create([
-			'user_id' => $this->activityOwner()->id,
+			'user_id' => ($this->project ?? $this)->owner,
             'description' => $description,
 			'changes' => $this->activityChanges(),
 			'project_id' => class_basename($this) === 'Project' ? $this->id : $this->project_id
         ]);
 	}
 	
-	protected function activityOwner()
-	{
-		// For now, assume the project owner
-		// $project = $this->project ?? $this;
-		// return $project->owner;
+	// protected function activityOwner()
+	// {
+	// 	// For now, assume the project owner
+	// 	// $project = $this->project ?? $this;
+	// 	// return $project->owner;
 		
-		// Refactors [inline] to: 
-		return ($this->project ?? $this)->owner;
+	// 	// Refactors [inline] to: 
+	// 	return ($this->project ?? $this)->owner;
 			
-	}
+	// }
 	
 	
 	
