@@ -29,6 +29,8 @@ class ProjectsTest extends TestCase
     /** @test */
     public function a_user_can_create_a_project()
     {
+		$this->withoutExceptionHandling();
+		
         $this->signIn();        // Helper method in the TestCase.php class
 
         $this->get('/projects/create')->assertStatus(200);
@@ -50,7 +52,40 @@ class ProjectsTest extends TestCase
              ->assertSee($attributes['title'])                   // we should see these things
              ->assertSee($attributes['description'])             //
              ->assertSee($attributes['notes']);                  //
-    }
+	}
+	
+	/** @test */
+	public function unauthorized_users_cannot_delete_projects() {
+	
+		// Arrange
+		$project = ProjectTestFactory::create();
+
+		// Act (Assert)
+		$this->delete($project->path())
+			 ->assertRedirect("/login");
+				
+		// Arrange differently
+		$this->signIn();
+		
+		// Act (assert)
+		$this->delete($project->path())->assertStatus(403);
+	}
+	
+	
+	/** @test */
+	public function a_user_can_delete_a_project() {
+		
+		// $this->withoutExceptionHandling();
+		
+		$project = ProjectTestFactory::create();
+
+        // Attempt the update
+        $this->actingAs($project->owner)
+             ->delete($project->path())
+			 ->assertRedirect("/projects");
+			 
+		$this->assertDatabaseMissing('projects', $project->only('id'));
+	}
 
     /** @test */
     public function a_user_can_update_a_project()
@@ -71,6 +106,7 @@ class ProjectsTest extends TestCase
         $this->assertDatabaseHas('projects', $attributes);
     }
 
+	
     /** @test */
     public function a_user_can_update_a_projects_general_notes()
     {

@@ -1,1 +1,1 @@
-<em>You completed "{{ $activity->subject->body }}"</em>
+<em>{{ $activity->user_name() }} completed "{{ $activity->subject->body }}"</em>

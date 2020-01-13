@@ -1,1 +1,0 @@
-<em>You marked "{{ $activity->subject->body }}" incomplete</em>

@@ -1,0 +1,1 @@
+<em>{{ $activity->user_name() }} marked "{{ $activity->subject->body }}" incomplete</em>

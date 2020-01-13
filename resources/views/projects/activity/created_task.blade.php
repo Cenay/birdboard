@@ -1,1 +1,1 @@
-<em>You created task "{{ $activity->subject->body }}"</em>
+<em>{{ $activity->user_name() }} created task "{{ $activity->subject->body }}"</em>

@@ -50,18 +50,6 @@ trait RecordsActivity
         ]);
 	}
 	
-	// protected function activityOwner()
-	// {
-	// 	// For now, assume the project owner
-	// 	// $project = $this->project ?? $this;
-	// 	// return $project->owner;
-	// 	// Refactors [inline] to: 
-	// 	return ($this->project ?? $this)->owner;
-			
-	// }
-	
-	
-	
 	public function activity()
     {
         return $this->morphMany(Activity::class, 'subject')->latest();

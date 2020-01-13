@@ -18,7 +18,6 @@ class TriggerActivityTest extends TestCase
         $project = ProjectTestFactory::create();
 
         $this->assertCount(1, $project->activity);
-		//$this->assertEquals('created_project', $project->activity[0]->description);
 		tap($project->activity->last(), function ($activity) {
             $this->assertEquals('created_project', $activity->description);
             $this->assertNull($activity->changes);
@@ -66,8 +65,6 @@ class TriggerActivityTest extends TestCase
     public function completing_a_task()
     {
         $project = ProjectTestFactory::withTasks(1)->create();
-        // $project = ProjectTestFactory::create();
-        // $project->addTask('Some task');
 
         $this->actingAs($project->owner)
              ->patch($project->tasks[0]->path(), [
@@ -75,9 +72,10 @@ class TriggerActivityTest extends TestCase
                  'completed' => true
              ]);
 
-        $this->assertCount(3, $project->activity);
-
-        // $project->completeTask('Some task');
+		//dd( $project->activity);
+		$project->refresh();
+		
+		$this->assertCount(3, $project->activity);
 		
 		tap($project->activity->last(), function ($activity) {
 			$this->assertEquals('completed_task', $activity->description);
@@ -97,14 +95,21 @@ class TriggerActivityTest extends TestCase
                  'completed' => true
              ]);
 
-        $this->assertCount(3, $project->activity);
-
-        $this->patch($project->tasks[0]->path(), [
-            'body' => 'foobar',
-            'completed' => false
-        ]);
+		// dd( $project->activity);
+			 
+		$this->assertCount(3, $project->activity);
+		
+		$this->patch($project->tasks[0]->path(), [
+			'body' => 'foobar',
+			'completed' => false
+		]);
+			 
+		$project->refresh();
+		
+		//dd( $project->activity);
+		
         $this->assertCount(4, $project->fresh()->activity);
-        $this->assertEquals('marked_task_incomplete', $project->fresh()->activity->last()->description);
+        $this->assertEquals('incompleted_task', $project->fresh()->activity->last()->description);
     }
 
     /** @test */

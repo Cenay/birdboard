@@ -51,6 +51,7 @@ class ProjectTasksTest extends TestCase
     /** @test */
     public function a_project_can_have_tasks()
     {
+		$this->withoutExceptionHandling();
         // Arrange
         $project = ProjectTestFactory::create();
 

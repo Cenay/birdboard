@@ -1,1 +1,1 @@
-<em>You created a Project</em>
+<em>{{ $activity->user_name() }} created a new project"</em>

@@ -7,17 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    /**
-     * Attributes to guard against mass assignment.
-     *
-     * @var array
-     */
-    protected $guarded = [];
+	use RecordsActivity; 	// Bring in our new trait
+	    
+	protected $guarded = [];
     protected $touches = ['project'];
-    protected $casts = [
-        'completed' => 'boolean'
-    ];
-
+	protected $casts   = ['completed' => 'boolean'];
+	
+	protected static $recordableEvents = ['created', 'deleted'];
+	
     public function path()
     {
         return "/projects/{$this->project->id}/tasks/{$this->id}";
@@ -41,22 +38,7 @@ class Task extends Model
     public function incomplete()
     {
         $this->update(['completed' => false]);
-        $this->recordActivity('marked_task_incomplete');
+        $this->recordActivity('incompleted_task');
 	}	
-	
-    public function recordActivity($description)
-    {
-		// Copied from Project
-		// Refactor to deal with the new polymorphic relationship
-		$this->activity()->create([
-			'project_id' => $this->project_id,
-			'description' => $description
-		]);	
-	}
-	
-	public function activity()
-    {
-        return $this->morphMany(Activity::class, 'subject')->latest();
-	}
-	
+		
 }
