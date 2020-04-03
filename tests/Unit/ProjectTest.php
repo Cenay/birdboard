@@ -2,7 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\User;
 use Tests\TestCase;
+use Illuminate\Support\Facades\App;
+use Facades\Tests\Setup\ProjectTestFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -30,8 +33,20 @@ class ProjectTest extends TestCase
     {
         $project = factory('App\Project')->create();
         $task = $project->addTask('Test task');
-
+		
         $this->assertCount(1, $project->tasks);
         $this->assertTrue($project->tasks->contains($task));
-    }
+	}
+	
+	/** @test */
+	public function it_can_invite_a_user() 
+	{
+		$project = ProjectTestFactory::create();	// Given I have a project
+		$project->invite($newUser = factory(User::class)->create());
+
+		
+		// Assert new user is one of the "members" that can work on projects
+		$this->assertTrue($project->members->contains($newUser));
+	}
+	
 }

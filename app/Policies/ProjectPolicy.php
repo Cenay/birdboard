@@ -13,6 +13,8 @@ class ProjectPolicy
 
     public function update(User $user, Project $project)
     {
-        return $user->is($project->owner);
+		// Both project owner AND team member should be able to edit
+		
+        return $user->is($project->owner) || $project->members->contains($user);
     }
 }

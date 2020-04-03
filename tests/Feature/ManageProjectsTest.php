@@ -8,6 +8,7 @@ use Facades\Tests\Setup\ProjectTestFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\Concerns;
+use phpDocumentor\Reflection\ProjectFactory;
 
 class ProjectsTest extends TestCase
 {
@@ -29,8 +30,8 @@ class ProjectsTest extends TestCase
     /** @test */
     public function a_user_can_create_a_project()
     {
-		$this->withoutExceptionHandling();
-		
+        $this->withoutExceptionHandling();
+
         $this->signIn();        // Helper method in the TestCase.php class
 
         $this->get('/projects/create')->assertStatus(200);
@@ -44,7 +45,7 @@ class ProjectsTest extends TestCase
         //$this->post('/projects', $attributes)->assertRedirect('/projects/1'); // ASSERTION
         // Another method (see for above)
         $response = $this->post('/projects', $attributes);      // Create the project
-        $project  = Project::where($attributes)->first();       // Track down the created project
+        $project = Project::where($attributes)->first();       // Track down the created project
 
         $response->assertRedirect($project->path());            // We got redirected to the proper place
 
@@ -52,47 +53,65 @@ class ProjectsTest extends TestCase
              ->assertSee($attributes['title'])                   // we should see these things
              ->assertSee($attributes['description'])             //
              ->assertSee($attributes['notes']);                  //
-	}
-	
-	/** @test */
-	public function unauthorized_users_cannot_delete_projects() {
-	
-		// Arrange
-		$project = ProjectTestFactory::create();
+    }
 
-		// Act (Assert)
-		$this->delete($project->path())
-			 ->assertRedirect("/login");
-				
-		// Arrange differently
-		$this->signIn();
-		
-		// Act (assert)
-		$this->delete($project->path())->assertStatus(403);
-	}
-	
-	
-	/** @test */
-	public function a_user_can_delete_a_project() {
-		
-		// $this->withoutExceptionHandling();
-		
-		$project = ProjectTestFactory::create();
+    /** @test */
+    public function a_user_can_see_all_projects_they_have_been_invited_to_on_their_dashboard()
+    {
+        //$this->withoutExceptionHandling();
+
+        // Given we're signed in
+        $user = $this->signIn();
+
+        // and we've been invited to a project that was not created by us
+        // $project = ProjectTestFactory::create();
+        // $project->invite($user);
+        // Can be replaced with this.
+        $project = tap(ProjectTestFactory::create())->invite($user);
+
+        // when I visit my dashboard
+        // I should see that project
+        $this->get('/projects')
+            ->assertSee($project->title);
+    }
+
+    /** @test */
+    public function unauthorized_users_cannot_delete_projects()
+    {
+        // Arrange
+        $project = ProjectTestFactory::create();
+
+        // Act (Assert)
+        $this->delete($project->path())
+             ->assertRedirect('/login');
+
+        // Arrange differently
+        $this->signIn();
+
+        // Act (assert)
+        $this->delete($project->path())->assertStatus(403);
+    }
+
+    /** @test */
+    public function a_user_can_delete_a_project()
+    {
+        // $this->withoutExceptionHandling();
+
+        $project = ProjectTestFactory::create();
 
         // Attempt the update
         $this->actingAs($project->owner)
              ->delete($project->path())
-			 ->assertRedirect("/projects");
-			 
-		$this->assertDatabaseMissing('projects', $project->only('id'));
-	}
+             ->assertRedirect('/projects');
+
+        $this->assertDatabaseMissing('projects', $project->only('id'));
+    }
 
     /** @test */
     public function a_user_can_update_a_project()
     {
+        $this->withoutExceptionHandling();
 
-		$this->withoutExceptionHandling();
-		
         $project = ProjectTestFactory::create();
 
         // Attempt the update
@@ -106,7 +125,6 @@ class ProjectsTest extends TestCase
         $this->assertDatabaseHas('projects', $attributes);
     }
 
-	
     /** @test */
     public function a_user_can_update_a_projects_general_notes()
     {
@@ -141,7 +159,6 @@ class ProjectsTest extends TestCase
 
         $this->get($project->path())->assertStatus(403);    // ASSERTION
     }
-
 
     /** @test */
     public function a_project_requires_a_title()
